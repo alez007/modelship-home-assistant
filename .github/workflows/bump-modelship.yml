@@ -1,0 +1,71 @@
+name: Bump bundled modelship
+
+# Watches the modelship repo for a new release and opens a PR that repoints this
+# add-on at the new CPU image (build.yaml), bumps the add-on version (config.yaml),
+# and updates the changelog. Runs daily and on demand.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "modelship version to bump to (blank = latest release)"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve target version
+        id: ver
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          target="${{ github.event.inputs.version }}"
+          if [ -z "$target" ]; then
+            target="$(gh release view --repo alez007/modelship --json tagName --jq .tagName)"
+          fi
+          target="${target#v}"
+          current="$(sed -nE 's#.*modelship:([0-9.]+)-cpu.*#\1#p' modelship-voice/build.yaml | head -1)"
+          echo "target=$target"   >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          if [ "$target" = "$current" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Already on modelship $current — nothing to do."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Don't bump to a version whose image hasn't finished publishing yet.
+      - name: Verify the -cpu image exists
+        if: steps.ver.outputs.changed == 'true'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker manifest inspect ghcr.io/alez007/modelship:${{ steps.ver.outputs.target }}-cpu > /dev/null
+
+      - name: Apply bump
+        if: steps.ver.outputs.changed == 'true'
+        run: ./bump.sh ${{ steps.ver.outputs.target }}
+
+      - name: Open pull request
+        if: steps.ver.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: bump/modelship-${{ steps.ver.outputs.target }}
+          title: "chore: bump bundled modelship to ${{ steps.ver.outputs.target }}"
+          commit-message: "chore: bump bundled modelship to ${{ steps.ver.outputs.target }}"
+          body: |
+            Automated bump: modelship `${{ steps.ver.outputs.current }}` → `${{ steps.ver.outputs.target }}`.
+
+            - repoints `modelship-voice/build.yaml` at the new `-cpu` image (both arches)
+            - bumps the add-on version in `modelship-voice/config.yaml`
+            - prepends a changelog entry
+
+            Verified the `${{ steps.ver.outputs.target }}-cpu` image manifest exists before opening.
