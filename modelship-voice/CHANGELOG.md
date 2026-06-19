@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Fix the Wyoming bridge failing to start (`No module named bridge`) by putting
+  the bridge package on `PYTHONPATH` in the supervisor.
+
 ## 0.1.1
 
 - Bump bundled modelship to 0.5.0.
