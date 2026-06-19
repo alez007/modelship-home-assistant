@@ -55,8 +55,9 @@ uv run --no-sync mship_deploy.py &
 mship_pid=$!
 
 # The bridge polls /readyz itself, so start it now; it will block until modelship
-# is up and the generated models.yaml exists.
-"$BRIDGE_PY" -m bridge &
+# is up and the generated models.yaml exists. PYTHONPATH points at the bridge
+# package's parent (cwd is /modelship for modelship's sake).
+PYTHONPATH="${BRIDGE_DIR:-/opt/bridge}" "$BRIDGE_PY" -m bridge &
 bridge_pid=$!
 
 # Exit as soon as either child exits; the supervisor restarts the whole add-on.
