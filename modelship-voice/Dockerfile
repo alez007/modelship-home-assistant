@@ -23,7 +23,6 @@ ENV HOME=/data \
     MSHIP_CACHE_DIR=/data/cache \
     HF_HOME=/data/hf \
     MSHIP_BASE_URL=http://127.0.0.1:8000 \
-    MSHIP_MODELS_CONFIG=/modelship/config/models.yaml \
     BRIDGE_VENV=/opt/bridge/venv \
     BRIDGE_DIR=/opt/bridge
 

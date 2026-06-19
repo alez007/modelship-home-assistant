@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Fix usecase discovery: read modelship's generated
+  `config/models_stack_<profile>.yaml` (a profile doesn't produce `models.yaml`),
+  with a fallback to the newest generated stack file.
+
 ## 0.1.2
 
 - Fix the Wyoming bridge failing to start (`No module named bridge`) by putting
