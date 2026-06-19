@@ -1,0 +1,35 @@
+name: Modelship Voice
+version: "0.1.0"
+slug: modelship_voice
+description: >-
+  Local speech-to-text and text-to-speech for Home Assistant Assist, powered by
+  modelship (whisper + Kokoro) over the Wyoming protocol — plus an OpenAI-compatible
+  API for the conversation LLM.
+url: https://github.com/alez007/modelship-home-assistant
+# arm64 (aarch64) is a first-class target: modelship's CPU image is multi-arch and
+# the bridge is pure Python, so Raspberry Pi / arm64 boxes are supported. Expect to
+# run the small model tier on low-RAM hardware.
+arch:
+  - amd64
+  - aarch64
+# Ray spawns a deep process tree; let Docker's init (tini) reap zombies for us.
+init: true
+# Other services (Assist pipeline) depend on this, so bring it up in the services phase.
+startup: services
+boot: auto
+ports:
+  10300/tcp: 10300
+  8000/tcp: 8000
+ports_description:
+  10300/tcp: Wyoming protocol (STT + TTS) — add via Settings → Devices → Add Integration → Wyoming
+  8000/tcp: modelship OpenAI API — point the OpenAI Conversation integration here for the LLM
+options:
+  model_stack: assistant
+  log_level: info
+  default_language: en
+schema:
+  model_stack: list(assistant|everything)
+  log_level: list(trace|debug|info|warning|error)
+  hf_token: password?
+  default_voice: str?
+  default_language: str?

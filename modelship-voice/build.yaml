@@ -1,0 +1,9 @@
+# Per-arch base image. Both point at the same multi-arch modelship CPU tag — the
+# registry serves the arch-appropriate manifest. Bump the pinned version
+# deliberately (in lockstep with `config.yaml` version) rather than tracking
+# `:latest-cpu`, so the bundled modelship can't shift under the add-on.
+build_from:
+  amd64: ghcr.io/alez007/modelship:0.4.0-cpu
+  aarch64: ghcr.io/alez007/modelship:0.4.0-cpu
+labels:
+  org.opencontainers.image.source: https://github.com/alez007/modelship-home-assistant
