@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+
+- Bump bundled modelship to 0.5.1.
+
+
 ## 0.1.3
 
 - Fix usecase discovery: read modelship's generated
