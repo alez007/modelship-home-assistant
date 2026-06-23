@@ -19,7 +19,6 @@ always targets the right STT/TTS models for the profile you chose.
 
 | Option | Default | Description |
 |---|---|---|
-| `model_stack` | `assistant` | Capability set. `assistant` = chat + STT + TTS. `everything` adds image + embeddings (heavier). |
 | `log_level` | `info` | `trace`/`debug` log full detail; `info` is normal. |
 | `hf_token` | _(unset)_ | Hugging Face token, only needed if you switch to gated models. |
 | `default_voice` | `af_heart` | Kokoro voice used when HA doesn't request a specific one. |
@@ -60,7 +59,8 @@ The LLM does **not** go through Wyoming.
 - **Add-on slow to start / Wyoming unavailable at first**: first boot downloads
   models. The bridge waits for modelship to be ready before it accepts Wyoming
   connections — watch the log for `Wyoming bridge listening on ...`.
-- **No STT/TTS offered in Assist**: confirm `model_stack` is `assistant` or
-  `everything` (a chat-only stack has no STT/TTS for the bridge to expose).
-- **Out-of-memory / killed**: try a smaller `model_stack`, or run on hardware
-  with more memory.
+- **No STT/TTS offered in Assist**: watch the log for `Wyoming bridge listening
+  on ...`. If you see a warning that modelship serves no transcription/tts model,
+  the bundled `assistant` stack didn't come up — check the modelship logs above it.
+- **Out-of-memory / killed**: run on hardware with more memory, or use a lighter
+  model tier.
