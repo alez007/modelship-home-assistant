@@ -1,5 +1,5 @@
 name: Modelship Voice
-version: "0.1.6"
+version: "0.1.7"
 slug: modelship_voice
 description: >-
   Local speech-to-text and text-to-speech for Home Assistant Assist, powered by
@@ -24,11 +24,9 @@ ports_description:
   10300/tcp: Wyoming protocol (STT + TTS) — add via Settings → Devices → Add Integration → Wyoming
   8000/tcp: modelship OpenAI API — point the OpenAI Conversation integration here for the LLM
 options:
-  model_stack: assistant
   log_level: info
   default_language: en
 schema:
-  model_stack: list(assistant|everything)
   log_level: list(trace|debug|info|warning|error)
   hf_token: password?
   default_voice: str?

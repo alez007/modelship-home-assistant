@@ -23,7 +23,8 @@ PY
 }
 
 # --- Map add-on options → environment -----------------------------------------
-MODEL_STACK="$(read_opt model_stack)"; export MSHIP_MODEL_STACK="${MODEL_STACK:-assistant}"
+# The add-on ships a single profile (assistant: chat + STT + TTS).
+export MSHIP_MODEL_STACK=assistant
 
 # With a profile, modelship regenerates config/models_stack_<profile>.yaml on each
 # start (not config/models.yaml). Point the bridge's usecase discovery at it.
