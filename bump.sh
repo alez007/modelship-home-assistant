@@ -12,9 +12,9 @@ MSHIP_VERSION="${1:?usage: bump.sh <modelship-version> (e.g. 0.5.0)}"
 MSHIP_VERSION="${MSHIP_VERSION#v}"   # tolerate a leading "v"
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-BUILD="$ROOT/modelship-voice/build.yaml"
-CONFIG="$ROOT/modelship-voice/config.yaml"
-CHANGELOG="$ROOT/modelship-voice/CHANGELOG.md"
+BUILD="$ROOT/modelship/build.yaml"
+CONFIG="$ROOT/modelship/config.yaml"
+CHANGELOG="$ROOT/modelship/CHANGELOG.md"
 
 current="$(sed -nE 's#.*modelship:([0-9.]+)-cpu.*#\1#p' "$BUILD" | head -1)"
 if [ "$current" = "$MSHIP_VERSION" ]; then

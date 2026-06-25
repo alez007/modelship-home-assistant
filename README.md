@@ -1,38 +1,39 @@
 # Modelship — Home Assistant add-on
 
-Run a fully local voice assistant in Home Assistant, powered by
-[modelship](https://github.com/alez007/modelship). One add-on bundles modelship's
-CPU `assistant` profile (whisper STT + Kokoro TTS + a chat LLM) with a small
-**Wyoming bridge**, so Home Assistant's Assist pipeline can use it end to end —
-no cloud, no API keys.
+Run a fully local [modelship](https://github.com/alez007/modelship) server in Home
+Assistant. The add-on exposes modelship's OpenAI-compatible API on port `8000`,
+serving whatever models you select via a profile or your own `models.yaml` —
+chat/LLM, embeddings, speech-to-text, text-to-speech and image generation.
+
+For a voice assistant (conversation + STT + TTS), pair it with the
+[**Modelship Conversation**](https://github.com/alez007/modelship-conversation)
+HACS integration, which drives this API directly over HTTP — no cloud, no Wyoming.
 
 ## What's inside
 
 | Capability | How HA connects | modelship endpoint |
 |---|---|---|
-| Speech-to-text | Wyoming (this add-on, port `10300`) | `/v1/audio/transcriptions` |
-| Text-to-speech | Wyoming (this add-on, port `10300`) | `/v1/audio/speech` |
-| Conversation LLM | *OpenAI Conversation* integration (port `8000`) | `/v1/chat/completions` |
+| Conversation LLM | Modelship Conversation integration (port `8000`) | `/v1/chat/completions`, `/v1/responses` |
+| Speech-to-text | Modelship Conversation integration (port `8000`) | `/v1/audio/transcriptions` |
+| Text-to-speech | Modelship Conversation integration (port `8000`) | `/v1/audio/speech` |
 
-STT and TTS speak the Wyoming protocol; the bridge translates those to
-modelship's OpenAI-compatible HTTP endpoints. The conversation LLM is **not**
-Wyoming — you wire it with Home Assistant's built-in *OpenAI Conversation*
-integration pointed at this add-on's port `8000`.
+Everything goes over modelship's OpenAI-compatible HTTP API; the Modelship
+Conversation integration exposes native HA conversation/STT/TTS entities backed by it.
 
 ## Install
 
 1. In Home Assistant: **Settings → Add-ons → Add-on store → ⋮ → Repositories**,
    add `https://github.com/alez007/modelship-home-assistant`.
-2. Install **Modelship Voice**, then start it. First boot downloads models, so
-   give it a few minutes (watch the add-on log).
-3. See the add-on's **Documentation** tab for wiring Assist. (`modelship-voice/DOCS.md`.)
+2. Install **Modelship**, then start it. First boot downloads models, so give it a
+   few minutes (watch the add-on log).
+3. See the add-on's **Documentation** tab for options and wiring Assist
+   (`modelship/DOCS.md`).
 
 ## Supported architectures
 
 `amd64` and `aarch64` (Raspberry Pi 4/5 and similar). On low-RAM boards the
-add-on automatically selects the small model tier.
+profiles automatically select the small model tier.
 
 ## Repository layout
 
-- [`modelship-voice/`](modelship-voice/) — the add-on (Dockerfile, config, bridge, docs).
-- The Wyoming bridge source lives in [`modelship-voice/bridge/`](modelship-voice/bridge/).
+- [`modelship/`](modelship/) — the add-on (Dockerfile, config, launcher, docs).
