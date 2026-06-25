@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.8
+
+- Bump bundled modelship to 0.5.5.
+
+
 ## 0.1.7
 
 - Fix the Wyoming bridge crashing on startup with `Unknown level: 'TRACE'`
