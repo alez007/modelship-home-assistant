@@ -40,30 +40,33 @@ STATE_STORE="$(read_opt state_store)"
 [ -n "$STATE_STORE" ] && export MSHIP_STATE_STORE="$STATE_STORE"
 
 # --- Config: profile vs custom models.yaml ------------------------------------
-# Redirect modelship's config dir into the user-visible addon_config mount (/config)
-# so generated profile YAMLs and a custom models.yaml both live there. The image
-# ships no /modelship/config, so the symlink has nothing to clobber.
-ln -sfn /config /modelship/config
-
-# Precedence mirrors modelship's resolve_config_path: an explicit --config wins
-# over MSHIP_MODEL_STACK. So a custom config_file disables the profile.
-CONFIG_ARG=""
+# Configs live in the user-visible addon_config mount (/config): generated profile
+# YAMLs and a custom models.yaml are read/written there by absolute path.
+#
+# A custom config_file overrides the profile. Both modes resolve to an explicit
+# --config path so the deploy always goes through the same reconcile path below.
+# For a profile we PRE-GENERATE the models.yaml ourselves (instead of letting
+# MSHIP_MODEL_STACK generate it lazily): passing --config + --reconcile with a
+# bare MSHIP_MODEL_STACK would hit mship_deploy's "self-heal" branch (reconcile +
+# no --config) and ignore the profile, deploying nothing on first boot.
 CONFIG_FILE="$(read_opt config_file)"
 if [ -n "$CONFIG_FILE" ]; then
     case "$CONFIG_FILE" in
         /*) CONFIG_PATH="$CONFIG_FILE" ;;          # absolute
         *)  CONFIG_PATH="/config/$CONFIG_FILE" ;;  # relative to addon_config
     esac
-    CONFIG_ARG="--config $CONFIG_PATH"
     echo "[run] using custom config: $CONFIG_PATH"
 else
     PROFILE="$(read_opt profile)"; PROFILE="${PROFILE:-assistant}"
-    export MSHIP_MODEL_STACK="$PROFILE"
-    echo "[run] using profile: $PROFILE"
+    CONFIG_PATH="/config/models_stack_${PROFILE}.yaml"
+    echo "[run] generating profile '$PROFILE' -> $CONFIG_PATH"
+    "$MSHIP_PY" -c "from modelship.deploy.profiles.generator import generate_models_yaml as g; g('${PROFILE}', '${CONFIG_PATH}')"
 fi
 
+# Reconcile every deploy so the running cluster matches the config exactly: editing
+# models.yaml or switching profile removes/replaces dropped deployments instead of
+# leaving stale ones behind (additive, the default, would only ever add).
 echo "[run] starting modelship (cache=${CACHE_DIR}, log=${MSHIP_LOG_LEVEL}, state=${MSHIP_STATE_STORE:-memory://})"
 
 cd /modelship
-# shellcheck disable=SC2086  # CONFIG_ARG is intentionally word-split (flag + value)
-exec uv run --no-sync mship_deploy.py ${CONFIG_ARG}
+exec uv run --no-sync mship_deploy.py --config "$CONFIG_PATH" --reconcile

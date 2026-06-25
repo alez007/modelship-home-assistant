@@ -24,6 +24,10 @@ two ways:
 | `log_level` | `info` | `trace`/`debug` log full detail; `info` is normal. |
 | `profile` | `assistant` | Model set to auto-generate: `chat` (LLM + embeddings), `assistant` (LLM + STT + TTS), `studio` (LLM + image + embeddings), `everything`. Ignored if `config_file` is set. |
 | `config_file` | _(unset)_ | Use your own `models.yaml` instead of a profile. Relative names resolve under the add-on config folder (e.g. `models.yaml`); absolute paths are used as-is. Takes precedence over `profile`. |
+
+The add-on **reconciles** on every start: the running models are made to match your
+profile/`models.yaml` exactly, so editing the config or switching profile removes or
+replaces the old deployments instead of leaving stale ones running.
 | `state_store` | `file://` | Where modelship persists its deployment state. `file://` (default) keeps it under the cache dir (`<cache_dir>/state`). Use `memory://` for none, `file:///some/path`, or `redis://[:password@]host:6379/0`. |
 | `cache_dir` | `/share/modelship` | Durable root for model weights, the Hugging Face cache and (by default) state. Lives under `/share` so it's reachable from the Samba/File-editor add-ons and can be cleared. |
 | `hf_token` | _(unset)_ | Hugging Face token, only needed for gated models. |
