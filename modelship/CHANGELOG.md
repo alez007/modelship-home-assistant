@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1
+
+- **Reconcile on every start**: the running models are made to match the selected
+  profile / `models.yaml` exactly (editing the config or switching profile removes or
+  replaces stale deployments, instead of additively piling them up — which the new
+  durable state store would otherwise persist across restarts).
+
 ## 0.2.0
 
 - **Renamed the add-on to "Modelship"** (slug `modelship`). It now runs a vanilla
