@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.0
+
+- **Renamed the add-on to "Modelship"** (slug `modelship`). It now runs a vanilla
+  modelship server instead of bundling a Wyoming bridge — STT/TTS/conversation are
+  provided natively by the
+  [Modelship Conversation](https://github.com/alez007/modelship-conversation) HACS
+  integration over the OpenAI API, so the Wyoming protocol (port `10300`) is gone.
+- **Profile selection**: choose `chat`, `assistant`, `studio` or `everything` instead
+  of a fixed stack.
+- **Custom config**: point the server at your own `models.yaml` via `config_file`
+  (overrides the profile). Generated profile configs and custom configs both live in
+  the add-on config folder, where you can inspect and edit them.
+- **State store**: configurable via `state_store` (`file://`, `memory://`, `redis://…`);
+  durable by default.
+- **Relocated the cache** to `/share/modelship` (configurable via `cache_dir`) so model
+  weights are reachable from the Samba/File-editor add-ons and can be cleared.
+- Existing "Modelship Voice" installs are a separate add-on; reinstall under the new
+  name (the old model cache on `/data` is not migrated).
+
 ## 0.1.8
 
 - Bump bundled modelship to 0.5.5.

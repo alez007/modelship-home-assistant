@@ -33,7 +33,7 @@ jobs:
             target="$(gh release view --repo alez007/modelship --json tagName --jq .tagName)"
           fi
           target="${target#v}"
-          current="$(sed -nE 's#.*modelship:([0-9.]+)-cpu.*#\1#p' modelship-voice/build.yaml | head -1)"
+          current="$(sed -nE 's#.*modelship:([0-9.]+)-cpu.*#\1#p' modelship/build.yaml | head -1)"
           echo "target=$target"   >> "$GITHUB_OUTPUT"
           echo "current=$current" >> "$GITHUB_OUTPUT"
           if [ "$target" = "$current" ]; then
@@ -64,8 +64,8 @@ jobs:
           body: |
             Automated bump: modelship `${{ steps.ver.outputs.current }}` → `${{ steps.ver.outputs.target }}`.
 
-            - repoints `modelship-voice/build.yaml` at the new `-cpu` image (both arches)
-            - bumps the add-on version in `modelship-voice/config.yaml`
+            - repoints `modelship/build.yaml` at the new `-cpu` image (both arches)
+            - bumps the add-on version in `modelship/config.yaml`
             - prepends a changelog entry
 
             Verified the `${{ steps.ver.outputs.target }}-cpu` image manifest exists before opening.
