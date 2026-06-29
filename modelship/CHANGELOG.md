@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- Bump bundled modelship to 0.5.6.
+
+
 ## 0.2.1
 
 - **Reconcile on every start**: the running models are made to match the selected
