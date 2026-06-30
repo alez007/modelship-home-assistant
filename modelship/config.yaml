@@ -1,5 +1,5 @@
 name: Modelship
-version: "0.2.3"
+version: "0.2.4"
 slug: modelship
 description: >-
   Run a local modelship server (OpenAI-compatible API) for Home Assistant —
@@ -30,7 +30,7 @@ options:
   log_level: info
   profile: assistant
   config_file: ""
-  state_store: "file://"
+  state_store: "memory://"
   cache_dir: /share/modelship
 schema:
   log_level: list(trace|debug|info|warning|error)

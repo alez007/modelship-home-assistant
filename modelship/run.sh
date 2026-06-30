@@ -34,8 +34,10 @@ mkdir -p "$CACHE_DIR" "$CACHE_DIR/hf"
 HF_TOKEN_OPT="$(read_opt hf_token)"; [ -n "$HF_TOKEN_OPT" ] && export HF_TOKEN="$HF_TOKEN_OPT"
 
 # --- State store --------------------------------------------------------------
-# Default "file://" (no path) → modelship persists durable state at
-# $MSHIP_CACHE_DIR/state. Override with memory://, file:///path, or redis://…
+# Default "memory://" → modelship keeps no durable state; the reconcile on every
+# start (below) rebuilds the cluster from the config, so a fresh in-memory store
+# is the right fit. Override with file:// (state under $MSHIP_CACHE_DIR/state),
+# file:///path, or redis://…
 STATE_STORE="$(read_opt state_store)"
 [ -n "$STATE_STORE" ] && export MSHIP_STATE_STORE="$STATE_STORE"
 

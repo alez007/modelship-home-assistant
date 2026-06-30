@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.4
+
+- **`memory://` is now the default `state_store`**: with the reconcile-on-every-start
+  behaviour, modelship rebuilds the cluster from the config on boot, so a durable state
+  store no longer earns its keep. Set `state_store: file://` (or `redis://…`) to keep
+  the old persistent behaviour.
+
 ## 0.2.3
 
 - Bump bundled modelship to 0.5.7.
@@ -8,7 +15,6 @@
 ## 0.2.2
 
 - Bump bundled modelship to 0.5.6.
-
 
 ## 0.2.1
 

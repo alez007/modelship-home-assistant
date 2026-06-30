@@ -28,8 +28,8 @@ two ways:
 The add-on **reconciles** on every start: the running models are made to match your
 profile/`models.yaml` exactly, so editing the config or switching profile removes or
 replaces the old deployments instead of leaving stale ones running.
-| `state_store` | `file://` | Where modelship persists its deployment state. `file://` (default) keeps it under the cache dir (`<cache_dir>/state`). Use `memory://` for none, `file:///some/path`, or `redis://[:password@]host:6379/0`. |
-| `cache_dir` | `/share/modelship` | Durable root for model weights, the Hugging Face cache and (by default) state. Lives under `/share` so it's reachable from the Samba/File-editor add-ons and can be cleared. |
+| `state_store` | `memory://` | Where modelship keeps its deployment state. `memory://` (default) keeps none — the reconcile on every start rebuilds the cluster from your config. Use `file://` to persist under the cache dir (`<cache_dir>/state`), `file:///some/path`, or `redis://[:password@]host:6379/0`. |
+| `cache_dir` | `/share/modelship` | Durable root for model weights and the Hugging Face cache (and state, if you set `state_store` to `file://`). Lives under `/share` so it's reachable from the Samba/File-editor add-ons and can be cleared. |
 | `hf_token` | _(unset)_ | Hugging Face token, only needed for gated models. |
 
 The `assistant` profile is the right default for the Modelship Conversation
@@ -41,7 +41,7 @@ integration (it serves an LLM + speech-to-text + text-to-speech).
   selected profile is written there as `models_stack_<profile>.yaml` on each start —
   copy it to `models.yaml`, edit it, and set `config_file: models.yaml` to take full
   control.
-- **Weights / cache / state** live under `cache_dir` (default `/share/modelship`),
+- **Weights / cache** live under `cache_dir` (default `/share/modelship`),
   accessible via the Samba share or File editor add-ons. Delete the folder to reclaim
   disk; it re-downloads on next start.
 
