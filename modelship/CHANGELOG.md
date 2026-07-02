@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5
+
+- Bump bundled modelship to 0.5.8.
+
+
 ## 0.2.4
 
 - **`memory://` is now the default `state_store`**: with the reconcile-on-every-start

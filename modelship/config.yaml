@@ -1,5 +1,5 @@
 name: Modelship
-version: "0.2.4"
+version: "0.2.5"
 slug: modelship
 description: >-
   Run a local modelship server (OpenAI-compatible API) for Home Assistant —
